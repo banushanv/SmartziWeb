@@ -5,6 +5,7 @@ import javax.validation.Payload;
 
 import com.example.SmartziWeb.service.impl.PasswordConstraintValidator;
 
+import javax.transaction.Transactional;
 import javax.validation.Constraint;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -18,6 +19,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = PasswordConstraintValidator.class)
 @Target({ TYPE, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
+@Transactional
 public @interface ValidPassword {
 
     String message() default "Invalid Password";

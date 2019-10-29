@@ -30,6 +30,7 @@ import com.example.SmartziWeb.service.UserService;
 
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 	
 	@Autowired

@@ -1,5 +1,7 @@
 package com.example.SmartziWeb.service;
 
+import javax.transaction.Transactional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +9,7 @@ import com.example.SmartziWeb.model.dto.UserDto;
 
 
 @Service
+@Transactional
 public interface UserService {
 	
 

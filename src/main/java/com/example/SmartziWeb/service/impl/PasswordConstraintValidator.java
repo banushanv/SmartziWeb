@@ -7,9 +7,11 @@ import org.passay.*;
 import org.passay.dictionary.WordListDictionary;
 import org.passay.dictionary.WordLists;
 import org.passay.dictionary.sort.ArraysSort;
+import org.springframework.stereotype.Service;
 
 import com.example.SmartziWeb.service.ValidPassword;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.io.FileReader;
@@ -18,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
+@Transactional
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
     private DictionaryRule dictionaryRule;
