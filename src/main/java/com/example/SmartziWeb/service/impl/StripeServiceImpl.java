@@ -25,7 +25,7 @@ public class StripeServiceImpl implements StripeService{
 	@Override
 	public Charge charge(Paymentform payment) throws StripeException {
 		
-		Stripe.apiKey = "sk_test_z31ZERwfxqqfMJdbx0WpeoGa";
+		Stripe.apiKey = "your seceret key";
 		
 		Map<String, Object> chargeParams = new HashMap<>();
 	        chargeParams.put("amount", payment.getAmount());
@@ -37,7 +37,7 @@ public class StripeServiceImpl implements StripeService{
 
 	@Override
 	public Token getToken(CardDetails card) throws StripeException {
-		Stripe.apiKey = "sk_test_z31ZERwfxqqfMJdbx0WpeoGa";
+		Stripe.apiKey = "your seceret key";
 		Map<String, Object> cardParams = new HashMap<String, Object>();
 		cardParams.put("number", card.getCardNumber());
 		cardParams.put("exp_month", card.getExpMonth());
