@@ -1,82 +1,68 @@
 package com.example.SmartziWeb.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.example.SmartziWeb.model.User;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.stripe.Stripe;
+import com.example.SmartziWeb.model.CardDetails;
+import com.example.SmartziWeb.model.Paymentform;
+import com.example.SmartziWeb.service.StripeService;
+import com.stripe.exception.ApiConnectionException;
+import com.stripe.exception.ApiException;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
-import com.stripe.model.Customer;
 import com.stripe.model.Token;
 
 
-
-@RestController
-@RequestMapping(path = "/api/pay")
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+@Controller
 public class StripePaymentController {
-	
-	@GetMapping("/stripe")
-	public ResponseEntity sample() throws StripeException {
-		Stripe.apiKey="sk_test_z31ZERwfxqqfMJdbx0WpeoGa";
-		Map<String,Object> cardParam=new HashMap<String,Object>();
-		
-		Map<String,Object> customerParameter=new HashMap<String,Object>();
-		
-		customerParameter.put("email", "sanu@gmail.com");
-		Customer newCustomer=Customer.create(customerParameter);
-	//	Customer a=Customer.retrieve("cus_G4YkPdSCIMIM9L");
-		Customer b=Customer.retrieve("cus_G4Zx5B4rfNDusg");
-		
-		
-		
-		
-		cardParam.put("number", "4242 4242 4242 4242");
-		cardParam.put("exp_month", "11");
-		cardParam.put("exp_year", "2021");
-		cardParam.put("cvc", "111");
-		
-		Map<String,Object> tokenParam=new HashMap<String,Object>();
-		tokenParam.put("card",cardParam);
-		
-		Token token=Token.create(tokenParam);
-		
-		Map<String,Object> source=new HashMap<String,Object>();
-		
-		source.put("source",token.getId());
-		b.getSources().create(source);
-		
-		Map<String,Object> chargeParam=new HashMap<String,Object>();
-		chargeParam.put("amount", 300);
-		chargeParam.put("currency", "usd");
-		chargeParam.put("customer", b.getId());
-		
-		
-		Charge.create(chargeParam);
-		Gson gson=new GsonBuilder().setPrettyPrinting().create();
-		System.out.println(gson.toJson(b));
-		  return new ResponseEntity<String>("Account Created",HttpStatus.OK);
-//		System.out.println(newCustomer.getId());
-	}
 
+	@Autowired
+	StripeService paymentService;
 	
+	private static final Logger logger = LoggerFactory.getLogger(StripePaymentController.class);
+	 
+	@RequestMapping(value = "/payment", method = RequestMethod.GET)
+    public ModelAndView showTypeForm() {
+        return new ModelAndView("TokenForm", "cardDetails", new CardDetails());
+    }
 	
-	
+	@RequestMapping(value = "/createPayment", method = RequestMethod.POST)
+	public ModelAndView submit(@Valid @ModelAttribute("cardDetails") CardDetails card, BindingResult result) throws StripeException {
+		if (result.hasErrors()) {
 			
-		
+		}
+		Token token = paymentService.getToken(card);
+		Paymentform form = new Paymentform();
+		logger.info(token.toString());
+		form.setStripeToken(token.getId());
+		return new ModelAndView("PaymentForm", "paymentForm", form);
+	}
+	
+	@RequestMapping(value = "/sendPayment", method = RequestMethod.POST)
+	public ModelAndView submitPayment(@Valid @ModelAttribute("paymentForm") Paymentform payment, BindingResult result) throws StripeException {
+		if (result.hasErrors()) {
+			
+		}
+		Charge charge = paymentService.charge(payment);
+		logger.info(charge.toString());
+		 return new ModelAndView("completed");
 	}
 	
 	
-
-
+}
