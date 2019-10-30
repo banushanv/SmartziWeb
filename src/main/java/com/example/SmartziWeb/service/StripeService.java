@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.SmartziWeb.model.CardDetails;
@@ -29,6 +30,6 @@ import com.stripe.model.Token;
 
 @Service
 public interface StripeService {
-	public Charge charge(Paymentform payment) throws AuthenticationException, InvalidRequestException, ApiConnectionException, CardException, ApiException, StripeException;
+	public ResponseEntity charge(Paymentform payment) throws AuthenticationException, InvalidRequestException, ApiConnectionException, CardException, ApiException, StripeException;
 	public Token getToken(CardDetails card) throws AuthenticationException, InvalidRequestException, ApiConnectionException, CardException, ApiException, StripeException;
 }

@@ -1,15 +1,45 @@
 package com.example.SmartziWeb.model;
 
+import java.io.Serializable;
 
-public class Paymentform {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import io.swagger.annotations.ApiModelProperty;
+
+@Entity
+@Table(schema = "PaymentTypes", name = "PaymentTypes")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Paymentform implements Serializable {
+
+	private static final long serialVersionUID = 1488659908646811933L;
+
+	@Id 
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@ApiModelProperty(hidden = true)
+	private Long id;
+	
+	
+	@Column(name="Description")
     private String description;
+    
+	@Column(name="Amount")
     private int amount;
+    
+	@Column(name="Currency")
     private String currency;
    
     
+	@Column(name="Stripe_Email")
     private String stripeEmail;
+    
+	@Column(name="Stripe_Token")
     private String stripeToken;
     
 	public String getDescription() {
