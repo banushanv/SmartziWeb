@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,16 @@ import com.stripe.model.Token;
 
 @Service
 public class StripeServiceImpl implements StripeService{
+	
+
+	
 	@Autowired
 	private PaymentRepository paymetRepository;
 
 	@Override
-	public ResponseEntity charge(Paymentform payment) throws StripeException {
+	public Charge charge(Paymentform payment) throws StripeException {
 		SuccessResponse response= new SuccessResponse();
-		Stripe.apiKey = "Your stripe secret key";
+		Stripe.apiKey ="sk_test_z31ZERwfxqqfMJdbx0WpeoGa";
 		
 		Map<String, Object> chargeParams = new HashMap<>();
 	        chargeParams.put("amount", payment.getAmount());
@@ -41,15 +45,16 @@ public class StripeServiceImpl implements StripeService{
 	        chargeParams.put("source", payment.getStripeToken());
 	        payment.equals(chargeParams);
 	        this.paymetRepository.save(payment);
-	        response.setStatus("200");
-			response.setDescription("uploading banner is successful ");
-			return new ResponseEntity(response, HttpStatus.OK);
-	       // return Charge.create(chargeParams);
+	    //    response.setStatus("200");
+		//	response.setDescription("Payment is successful ");
+		//	return new ResponseEntity(response, HttpStatus.OK);
+	        return Charge.create(chargeParams);
 	}
 
 	@Override
 	public Token getToken(CardDetails card) throws StripeException {
-		Stripe.apiKey = "Your stripe secret key";
+		SuccessResponse response= new SuccessResponse();
+		Stripe.apiKey = "sk_test_z31ZERwfxqqfMJdbx0WpeoGa";
 		Map<String, Object> cardParams = new HashMap<String, Object>();
 		cardParams.put("number", card.getCardNumber());
 		cardParams.put("exp_month", card.getExpMonth());

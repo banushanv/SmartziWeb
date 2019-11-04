@@ -6,12 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.SmartziWeb.model.CardDetails;
 import com.example.SmartziWeb.model.Paymentform;
@@ -22,7 +24,10 @@ import com.stripe.model.Charge;
 import com.stripe.model.Token;
 
 
-@Controller
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+
+@RestController
 public class StripePaymentController {
 
 	@Autowired
@@ -48,16 +53,14 @@ public class StripePaymentController {
 	}
 	
 	@RequestMapping(value = "/sendPayment", method = RequestMethod.POST)
-	public ResponseEntity submitPayment(@Valid @ModelAttribute("paymentForm") Paymentform payment) throws StripeException {
+	public ModelAndView submitPayment(@Valid @ModelAttribute("paymentForm") Paymentform payment) throws StripeException {
 //		if (result.hasErrors()) {
 			
 	//	}
-		ResponseEntity charge = paymentService.charge(payment);
+		Charge charge = paymentService.charge(payment);
 		logger.info(charge.toString());
-		// return new ModelAndView("completed");
-		return paymentService.charge(payment);
+		 return new ModelAndView("completed");
 	}
-	
 	
 	
 }
